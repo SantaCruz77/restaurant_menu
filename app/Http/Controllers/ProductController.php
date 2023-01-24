@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::latest()->paginate(5);
+        return view('product.index', ['products' => $products]);
     }
 
     /**
@@ -23,7 +25,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('product.create');
     }
 
     /**
@@ -34,7 +36,33 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        request()->validate(
+            ['name' => 'required',
+             'description' => 'required',
+             'price' => 'required|integer',
+             'category' => 'required',
+             'image' => 'required|mimes:jpeg,png,jpg,gig,svg'],
+            ['name.required' => '商品名を入力してください',
+             'description.required' => '詳細を入力してください',
+             'price.required' => '値段を入力してください',
+             'category.required' => 'カテゴリーを入力してください',
+             'image.required' => '画像を選択してください']
+        );
+
+        $image = $request->file('image');
+        $name  = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $name);
+
+        Product::create([
+            'name'=> request('name'),
+            'description'=>request('description'),
+            'price'=>request('price'),
+            'category_id'=>request('category'),
+            'image'=>$name
+        ]);
+
+        return redirect()->back()->with('message', '商品情報が追加されました');
     }
 
     /**
