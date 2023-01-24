@@ -6,6 +6,12 @@
         <a href="{{ url('/product/create') }}">＜戻る</a>
     </div>
 
+    @if (session('message'))
+        <div class="alert alert-success" role="alert" >
+            {{ session('message') }}
+        </div>
+    @endif
+
     <table class="table table-bordered mt-2" >
         <thead class="table-dark" >
             <tr>
@@ -40,7 +46,9 @@
                     {{ $category->name }}
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-danger" ><i class="far fa-edit" ></i>編集</button>
+                    <a href="{{ route('category.edit', [ 'category' => $category->id ]) }}">
+                        <button type="button" class="btn btn-outline-danger" ><i class="far fa-edit" ></i>編集</button>
+                    </a>
                 </td>
                 <td>
                     <button type="button" class="btn btn-outline-primary" ><i class="far fa-trash-alt" ></i>削除</button>
