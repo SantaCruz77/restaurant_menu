@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -138,5 +139,10 @@ class ProductController extends Controller
         $product = Product::find($id);
         $product->delete();
         return redirect('/product')->with('message', '商品情報が削除されました');
+    }
+
+    public function productTop() {
+        $categories = Category::latest()->get();
+        return view('product.top',['categories' => $categories]);
     }
 }
